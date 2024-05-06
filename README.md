@@ -1,2 +1,3 @@
 # pokedex
-Pokédex CLI tool built with Go
+
+Pokédex CLI program built with Go
