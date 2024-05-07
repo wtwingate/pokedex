@@ -41,15 +41,19 @@ var cliCommandMap = map[string]cliCommand{
 }
 
 func commandHelp() error {
-	fmt.Println()
-	fmt.Println("No one can hear your cries for help...")
-	fmt.Println()
+	helpMessage := `
+Welcome to the Pokédex CLI!
+
+Commands:
+
+help	display this help menu
+exit	exit the program
+`
+	fmt.Println(helpMessage)
 	return nil
 }
 
 func commandExit() error {
-	fmt.Println()
-	fmt.Println("There is no escape!")
-	fmt.Println()
+	os.Exit(0)
 	return nil
 }
