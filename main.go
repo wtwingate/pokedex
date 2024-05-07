@@ -12,9 +12,6 @@ func main() {
 
 	for fmt.Print(prompt); scanner.Scan(); fmt.Print(prompt) {
 		line := scanner.Text()
-		if len(line) == 0 {
-			break
-		}
 		if command, ok := cliCommandMap[line]; ok {
 			command.callback()
 		}
