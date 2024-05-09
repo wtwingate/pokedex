@@ -1,14 +1,22 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
+
+	"github.com/wtwingate/pokedex/internal/pokeapi"
 )
 
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
+}
+
+type config struct {
+	Next     *string
+	Previous *string
 }
 
 func getCommands() map[string]cliCommand {
@@ -36,28 +44,46 @@ func getCommands() map[string]cliCommand {
 	}
 }
 
-func commandHelp() error {
-	fmt.Println()
-	fmt.Println("Welcome to the Pokédex CLI!")
-	fmt.Println()
-	fmt.Println("Commands:")
-	fmt.Println()
+func commandHelp(config *config) error {
 	for _, cmd := range getCommands() {
-		fmt.Printf("%s:\t%s\n", cmd.name, cmd.description)
+		fmt.Printf("%s\t%s\n", cmd.name, cmd.description)
 	}
-	fmt.Println()
 	return nil
 }
 
-func commandExit() error {
+func commandExit(config *config) error {
 	os.Exit(0)
 	return nil
 }
 
-func commandMap() error {
+func commandMap(config *config) error {
+	if config.Next == nil {
+		return errors.New("no more locations to show")
+	}
+	locations := pokeapi.GetLocations(*config.Next)
+
+	config.Next = locations.Next
+	config.Previous = locations.Previous
+
+	results := locations.Results
+	for _, v := range results {
+		fmt.Println(v.Name)
+	}
 	return nil
 }
 
-func commandMapB() error {
+func commandMapB(config *config) error {
+	if config.Previous == nil {
+		return errors.New("no previous locations to show")
+	}
+	locations := pokeapi.GetLocations(*config.Previous)
+
+	config.Next = locations.Next
+	config.Previous = locations.Previous
+
+	results := locations.Results
+	for _, v := range results {
+		fmt.Println(v.Name)
+	}
 	return nil
 }

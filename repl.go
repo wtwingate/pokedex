@@ -12,11 +12,15 @@ func startREPL() {
 	scanner := bufio.NewScanner(os.Stdin)
 	commands := getCommands()
 
+	endpoint := "https://pokeapi.co/api/v2/location/"
+	config := config{&endpoint, nil}
+
+	fmt.Println("Welcome to the Pokédex CLI!")
 	for fmt.Print(prompt); scanner.Scan(); fmt.Print(prompt) {
 		line := scanner.Text()
 		words := cleanInput(line)
 		if cmd, ok := commands[words[0]]; ok {
-			err := cmd.callback()
+			err := cmd.callback(&config)
 			if err != nil {
 				fmt.Println(err)
 			}
