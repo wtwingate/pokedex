@@ -11,7 +11,10 @@ func commandMap(config *config) error {
 	if config.Next == nil {
 		return errors.New("no more locations to show")
 	}
-	locations := pokeapi.GetLocations(*config.Next)
+	locations, err := pokeapi.GetLocations(*config.Next)
+	if err != nil {
+		return err
+	}
 
 	config.Next = locations.Next
 	config.Previous = locations.Previous

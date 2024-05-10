@@ -2,7 +2,6 @@ package pokeapi
 
 import (
 	"encoding/json"
-	"log"
 )
 
 type Locations struct {
@@ -15,12 +14,16 @@ type Locations struct {
 	} `json:"results"`
 }
 
-func GetLocations(endpoint string) Locations {
-	data := getResource(endpoint)
-	locs := Locations{}
-	err := json.Unmarshal(data, &locs)
+func GetLocations(endpoint string) (Locations, error) {
+	data, err := getResource(endpoint)
 	if err != nil {
-		log.Fatal(err)
+		return Locations{}, err
 	}
-	return locs
+
+	locations := Locations{}
+	err = json.Unmarshal(data, &locations)
+	if err != nil {
+		return locations, err
+	}
+	return locations, nil
 }
