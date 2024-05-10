@@ -15,7 +15,11 @@ type cacheEntry struct {
 	data    []byte
 }
 
-func NewCache(interval time.Duration) Cache {}
+func NewCache(interval time.Duration) *Cache {
+	cache := Cache{}
+	cache.reapLoop(interval)
+	return &cache
+}
 
 func (c *Cache) Add(key string, data []byte) {
 	c.Mu.Lock()
@@ -41,4 +45,15 @@ func (c *Cache) Get(key string) ([]byte, bool) {
 
 func (c *Cache) reapLoop(interval time.Duration) {
 	ticker := time.NewTicker(interval)
+	go func() {
+		for range ticker.C {
+			c.Mu.Lock()
+			for k, v := range c.Entry {
+				if time.Since(v.created) > interval {
+					delete(c.Entry, k)
+				}
+			}
+			c.Mu.Unlock()
+		}
+	}()
 }
