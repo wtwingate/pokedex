@@ -1,6 +1,7 @@
 package pokecache
 
 import (
+	"fmt"
 	"sync"
 	"time"
 )
@@ -16,7 +17,10 @@ type cacheEntry struct {
 }
 
 func NewCache(interval time.Duration) *Cache {
-	cache := Cache{}
+	entryMap := make(map[string]cacheEntry)
+	cache := Cache{
+		Entry: entryMap,
+	}
 	cache.reapLoop(interval)
 	return &cache
 }
@@ -39,6 +43,7 @@ func (c *Cache) Get(key string) ([]byte, bool) {
 	if !ok {
 		return []byte{}, false
 	} else {
+		fmt.Println("*** data from cache ***")
 		return entry.data, true
 	}
 }

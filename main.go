@@ -1,6 +1,8 @@
 package main
 
-import "github.com/wtwingate/pokedex/internal/pokeapi"
+import (
+	"github.com/wtwingate/pokedex/internal/pokeapi"
+)
 
 type Config struct {
 	Client   pokeapi.Client
@@ -10,7 +12,7 @@ type Config struct {
 
 func main() {
 	config := Config{
-		Client:   pokeapi.NewClient(),
+		Client:   *pokeapi.NewClient(),
 		Next:     nil,
 		Previous: nil,
 	}

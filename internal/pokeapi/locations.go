@@ -2,9 +2,6 @@ package pokeapi
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
-	"net/http"
 )
 
 type Locations struct {
@@ -23,27 +20,24 @@ func (c *Client) GetLocations(pageURL *string) (Locations, error) {
 		endpoint = *pageURL
 	}
 
-	req, err := http.NewRequest("GET", endpoint, nil)
-	if err != nil {
-		return Locations{}, nil
-	}
-
-	res, err := c.httpClient.Do(req)
-	if err != nil {
-		return Locations{}, err
-	}
-
-	if res.StatusCode > 299 {
-		return Locations{}, fmt.Errorf("bad status code: %v", res.StatusCode)
-	}
-
-	body, err := io.ReadAll(res.Body)
-	defer res.Body.Close()
-	if err != nil {
-		return Locations{}, err
-	}
-
 	locations := Locations{}
+
+	if body, ok := c.cache.Get(endpoint); ok {
+		err := json.Unmarshal(body, &locations)
+		if err != nil {
+			return Locations{}, err
+		}
+
+		return locations, nil
+	}
+
+	body, err := c.getResource(endpoint)
+	if err != nil {
+		return Locations{}, err
+	}
+
+	c.cache.Add(endpoint, body)
+
 	err = json.Unmarshal(body, &locations)
 	if err != nil {
 		return Locations{}, err
