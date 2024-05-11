@@ -1,23 +1,22 @@
 package pokeapi
 
 import (
-	"io"
-	"log"
 	"net/http"
+	"time"
 )
 
-func getResource(endpoint string) ([]byte, error) {
-	res, err := http.Get(endpoint)
-	if err != nil {
-		return []byte{}, err
+const baseURL = "https://pokeapi.co/api/v2/"
+
+type Client struct {
+	httpClient http.Client
+}
+
+func NewClient() Client {
+	client := Client{
+		httpClient: http.Client{
+			Timeout: 30 * time.Second,
+		},
 	}
-	body, err := io.ReadAll(res.Body)
-	res.Body.Close()
-	if res.StatusCode > 299 {
-		log.Fatalf("Response failed\nstatus code: %d\nbody: %s\n", res.StatusCode, body)
-	}
-	if err != nil {
-		return []byte{}, err
-	}
-	return body, nil
+
+	return client
 }

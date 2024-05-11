@@ -10,28 +10,20 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*Config) error
 }
 
-type config struct {
-	Next     *string
-	Previous *string
-}
-
-func startREPL() {
-	prompt := "Pokédex >>> "
+func startREPL(config *Config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	commands := getCommands()
 
-	endpoint := "https://pokeapi.co/api/v2/location/"
-	config := config{&endpoint, nil}
-
 	fmt.Println("Welcome to the Pokédex CLI!")
+	prompt := "Pokédex >>> "
 	for fmt.Print(prompt); scanner.Scan(); fmt.Print(prompt) {
 		line := scanner.Text()
 		words := cleanInput(line)
 		if cmd, ok := commands[words[0]]; ok {
-			err := cmd.callback(&config)
+			err := cmd.callback(config)
 			if err != nil {
 				fmt.Println(err)
 			}

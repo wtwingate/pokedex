@@ -3,25 +3,22 @@ package main
 import (
 	"errors"
 	"fmt"
-
-	"github.com/wtwingate/pokedex/internal/pokeapi"
 )
 
-func commandMapB(config *config) error {
-	if config.Previous == nil {
+func commandMapB(cfg *Config) error {
+	if cfg.Previous == nil {
 		return errors.New("no previous locations to show")
 	}
-	locations, err := pokeapi.GetLocations(*config.Previous)
+	locations, err := cfg.Client.GetLocations(cfg.Previous)
 	if err != nil {
 		return err
 	}
 
-	config.Next = locations.Next
-	config.Previous = locations.Previous
+	cfg.Next = locations.Next
+	cfg.Previous = locations.Previous
 
-	results := locations.Results
-	for _, v := range results {
-		fmt.Println(v.Name)
+	for _, v := range locations.Results {
+		fmt.Println("--", v.Name)
 	}
 	return nil
 }
