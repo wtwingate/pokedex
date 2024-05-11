@@ -1,7 +1,6 @@
 package pokecache
 
 import (
-	"fmt"
 	"sync"
 	"time"
 )
@@ -43,7 +42,6 @@ func (c *Cache) Get(key string) ([]byte, bool) {
 	if !ok {
 		return []byte{}, false
 	} else {
-		fmt.Println("*** data from cache ***")
 		return entry.data, true
 	}
 }
