@@ -15,7 +15,7 @@ type Locations struct {
 }
 
 func (c *Client) GetLocations(pageURL *string) (Locations, error) {
-	endpoint := baseURL + "location/"
+	endpoint := baseURL + "location-area/"
 	if pageURL != nil {
 		endpoint = *pageURL
 	}

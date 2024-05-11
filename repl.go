@@ -10,7 +10,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*Config) error
+	callback    func(*Config, string) error
 }
 
 func startREPL(config *Config) {
@@ -23,7 +23,7 @@ func startREPL(config *Config) {
 		line := scanner.Text()
 		words := cleanInput(line)
 		if cmd, ok := commands[words[0]]; ok {
-			err := cmd.callback(config)
+			err := cmd.callback(config, words[1])
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -41,6 +41,9 @@ func cleanInput(s string) []string {
 	for _, w := range strings.Fields(s) {
 		w = strings.ToLower(w)
 		words = append(words, w)
+	}
+	if len(words) == 1 {
+		words = append(words, "")
 	}
 	return words
 }
@@ -66,6 +69,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "show (prev) 20 locations on map",
 			callback:    commandMapB,
+		},
+		"explore": {
+			name:        "explore",
+			description: "explore specified location",
+			callback:    commandExplore,
 		},
 	}
 }
