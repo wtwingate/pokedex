@@ -4,7 +4,7 @@ import "fmt"
 
 func commandExplore(cfg *Config, arg string) error {
 	if len(arg) == 0 {
-		fmt.Println("Usage: explore <location-name>")
+		fmt.Println("usage: explore <location-name>")
 		return nil
 	}
 
