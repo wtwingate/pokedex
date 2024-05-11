@@ -15,14 +15,14 @@ type Locations struct {
 }
 
 func (c *Client) GetLocations(pageURL *string) (Locations, error) {
-	endpoint := baseURL + "location-area/"
-	if pageURL != nil {
-		endpoint = *pageURL
+	defaultURL := baseURL + "location-area/"
+	if pageURL == nil {
+		pageURL = &defaultURL
 	}
 
 	locations := Locations{}
 
-	if body, ok := c.cache.Get(endpoint); ok {
+	if body, ok := c.cache.Get(*pageURL); ok {
 		err := json.Unmarshal(body, &locations)
 		if err != nil {
 			return Locations{}, err
@@ -31,12 +31,12 @@ func (c *Client) GetLocations(pageURL *string) (Locations, error) {
 		return locations, nil
 	}
 
-	body, err := c.getResource(endpoint)
+	body, err := c.getResource(*pageURL)
 	if err != nil {
 		return Locations{}, err
 	}
 
-	c.cache.Add(endpoint, body)
+	c.cache.Add(*pageURL, body)
 
 	err = json.Unmarshal(body, &locations)
 	if err != nil {

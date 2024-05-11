@@ -27,9 +27,9 @@ func NewClient() *Client {
 	return &client
 }
 
-func (c *Client) getResource(endpoint string) ([]byte, error) {
+func (c *Client) getResource(pageURL string) ([]byte, error) {
 
-	req, err := http.NewRequest("GET", endpoint, nil)
+	req, err := http.NewRequest("GET", pageURL, nil)
 	if err != nil {
 		return []byte{}, nil
 	}
