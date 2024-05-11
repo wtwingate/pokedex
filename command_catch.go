@@ -32,7 +32,7 @@ func commandCatch(cfg *Config, arg string) error {
 	fmt.Printf("\n")
 
 	baseXP := data.BaseExperience
-	if 100 > rand.Intn(baseXP) {
+	if 50 > rand.Intn(baseXP) {
 		cfg.Pokedex[arg] = data
 		fmt.Printf("you caught %v!\n", arg)
 	} else {
